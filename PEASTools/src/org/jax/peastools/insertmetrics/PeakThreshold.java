@@ -19,15 +19,19 @@ public class PeakThreshold {
 	
 	public static void main(String[] args){
 		PeakThreshold pt = new PeakThreshold();
-		pt.doIt(args[0], args[1]);
+		boolean useduplicateflag = true;
+		if(args[args.length-1].equals("--keepduplicates")) {
+			useduplicateflag = false;
+		}
+		pt.doIt(args[0], args[1], useduplicateflag);
 	}
 	
-	private void doIt(String in, String out){
+	private void doIt(String in, String out, boolean useduplicateflag){
 		if(out.endsWith("/")){
 			out = out.substring(0, out.length()-1);
 		}
 		try {
-			writeFile(out, getThreshold(in, out));
+			writeFile(out, getThreshold(in, out, useduplicateflag));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -40,7 +44,7 @@ public class PeakThreshold {
 		bw.close();
 	}
 
-	private int getThreshold(String bamfile, String outdir){
+	private int getThreshold(String bamfile, String outdir, boolean useduplicateflag){
 		SamReaderFactory factory = SamReaderFactory.makeDefault()
 	              .enable(SamReaderFactory.Option.INCLUDE_SOURCE_IN_RECORDS, SamReaderFactory.Option.VALIDATE_CRC_CHECKSUMS)
 	              .validationStringency(ValidationStringency.SILENT);
@@ -60,7 +64,7 @@ public class PeakThreshold {
 		
 		while(it.hasNext()){
 			SAMRecord next = it.next();
-			stats.addRecord(next);
+			stats.addRecord(next, useduplicateflag);
 			SAMFileWriter w = writers.get(next.getReferenceName());
 			if(w != null){
 				w.addAlignment(next);

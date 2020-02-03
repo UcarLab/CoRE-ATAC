@@ -39,7 +39,7 @@ public class ReadStatistics {
 		return _flagremoved;
 	}
 	
-	public void addRecord(SAMRecord record){
+	public void addRecord(SAMRecord record, boolean useduplicatereadflag){
 		_total++;
 		int is = record.getInferredInsertSize();
 		boolean removed = false;
@@ -60,7 +60,7 @@ public class ReadStatistics {
 			removed = true;
 		}
 		
-		if(record.getDuplicateReadFlag()){
+		if(record.getDuplicateReadFlag() && useduplicatereadflag){
 			_duplicate++;
 			removed = true;
 		}

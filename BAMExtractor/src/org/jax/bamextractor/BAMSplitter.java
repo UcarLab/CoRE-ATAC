@@ -21,16 +21,23 @@ import htsjdk.samtools.ValidationStringency;
 public class BAMSplitter {
 
 	public static void main(String[] args) {
-		if(args.length == 3) {
+		boolean useduplicateflag = true;
+		if(args.length >= 3) {
 			BAMSplitter b = new BAMSplitter();
 			String bamfile = args[0];
 			String chromosomefile = args[1];
 			String outdir = args[2];
+			if(args.length > 3 && args[3].equals("--keepduplicates")) {
+				useduplicateflag = false;
+			}
 			try {
-				b.writeThreshold(outdir, b.getThresholdAndSplitBAM(bamfile, outdir, b.readChromosomes(chromosomefile)));
+				b.writeThreshold(outdir, b.getThresholdAndSplitBAM(bamfile, outdir, b.readChromosomes(chromosomefile), useduplicateflag));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+		else {
+			System.out.println("Usage: bamfile chromosomefile outputdirectory --keepduplicates(optional)");
 		}
 	}
 	
@@ -51,7 +58,7 @@ public class BAMSplitter {
 		return rv.toArray(new String[0]);
 	}
 	
-	private int getThresholdAndSplitBAM(String bamfile, String outdir, String[] chromosomes){
+	private int getThresholdAndSplitBAM(String bamfile, String outdir, String[] chromosomes, boolean useduplicateflag){
 		SamReaderFactory factory = SamReaderFactory.makeDefault()
 	              .enable(SamReaderFactory.Option.INCLUDE_SOURCE_IN_RECORDS, SamReaderFactory.Option.VALIDATE_CRC_CHECKSUMS)
 	              .validationStringency(ValidationStringency.SILENT);
@@ -71,7 +78,7 @@ public class BAMSplitter {
 		
 		while(it.hasNext()){
 			SAMRecord next = it.next();
-			stats.addRecord(next);
+			stats.addRecord(next, useduplicateflag);
 			SAMFileWriter w = writers.get(next.getReferenceName());
 			if(w != null){
 				w.addAlignment(next);

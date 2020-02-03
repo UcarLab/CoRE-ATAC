@@ -32,8 +32,13 @@ import org.jax.bamextractor.util.Util;
 public class ReadExtractor {
 	
 	public static void main(String[] args){
-		
+		boolean useduplicateflag = true;
 		if(args.length >= 6) {
+			
+			if(args[args.length-1].equals("--keepduplicates")) {
+				useduplicateflag = false;
+				System.out.println("Keeping duplicates.");
+			}
 			
 			String bamfile = args[0];
 			String locifile = args[1];
@@ -70,7 +75,7 @@ public class ReadExtractor {
 			else {
 				InsertSizeThreshold ist = new InsertSizeThreshold();
 				try {
-					thresh = ist.getInsertSizeThreshold(bamfile);
+					thresh = ist.getInsertSizeThreshold(bamfile, useduplicateflag);
 				} catch (IOException e) {
 					e.printStackTrace();
 					System.exit(1);
@@ -81,7 +86,7 @@ public class ReadExtractor {
 			
 			try {
 				ReadExtractor t = new ReadExtractor();
-				t.extractFeatures(bamfile, locifile, fastafiles, charperline, processors, thresh);
+				t.extractFeatures(bamfile, locifile, fastafiles, charperline, processors, thresh, useduplicateflag);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -92,7 +97,7 @@ public class ReadExtractor {
 		
 	}
 
-	public void extractFeatures(String chrbamfile, String peakfile, Map<String, String> fastafiles, int charperline, ATACReadProcessor[] processors, int insertthresh) throws IOException{
+	public void extractFeatures(String chrbamfile, String peakfile, Map<String, String> fastafiles, int charperline, ATACReadProcessor[] processors, int insertthresh, boolean useduplicateflag) throws IOException{
 		
 		SamReaderFactory factory = SamReaderFactory.makeDefault()
 	              .enable(SamReaderFactory.Option.INCLUDE_SOURCE_IN_RECORDS, SamReaderFactory.Option.VALIDATE_CRC_CHECKSUMS)
@@ -129,6 +134,10 @@ public class ReadExtractor {
 		String curchr = null;
 		while(it.hasNext()){
 			SAMRecord next = it.next();
+			
+			if(!fastafiles.containsKey(next.getReferenceName())){
+				continue;
+			}
 
 			if(first || !curchr.equals(next.getReferenceName())) {
 				
@@ -172,7 +181,7 @@ public class ReadExtractor {
 			totalreads++;
 			boolean isnegative = next.getReadNegativeStrandFlag();
 
-			if(!isValidRead(next, insertthresh)){
+			if(!isValidRead(next, insertthresh, useduplicateflag)){
 				invalidreads++;
 				continue;
 			}
@@ -330,12 +339,12 @@ public class ReadExtractor {
 		}
 	}
 	
-	private boolean isValidRead(SAMRecord record, int thresh){
+	private boolean isValidRead(SAMRecord record, int thresh, boolean useduplicateflag){
 		if ((!record.getReadPairedFlag() ||
                 record.getReadUnmappedFlag() ||
                 record.getMateUnmappedFlag() ||
                 record.isSecondaryOrSupplementary() ||
-                record.getDuplicateReadFlag())) {
+                (record.getDuplicateReadFlag() && useduplicateflag) )) {
 			return false;
 		}
 		

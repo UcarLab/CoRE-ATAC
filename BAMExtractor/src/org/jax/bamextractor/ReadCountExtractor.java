@@ -24,8 +24,12 @@ public class ReadCountExtractor {
 	//TODO make the code reusable instead of copying, only copying due to time limitations
 	
 	public static void main(String[] args){
-		
+		boolean useduplicateflag = true;
 		if(args.length >= 3) {
+			
+			if(args[args.length-1].equals("--keepduplicates")) {
+				useduplicateflag = false;
+			}
 			
 			String bamfile = args[0];
 			String locifile = args[1];
@@ -35,7 +39,6 @@ public class ReadCountExtractor {
 			ATACReadProcessor[] processors = new ATACReadProcessor[1];
 			processors[0] = new ReadCounts(outfile);
 
-			
 			int thresh = Integer.MAX_VALUE;
 			if(args.length > 3) {
 				thresh = Integer.parseInt(args[3]);
@@ -43,7 +46,7 @@ public class ReadCountExtractor {
 			else {
 				InsertSizeThreshold ist = new InsertSizeThreshold();
 				try {
-					thresh = ist.getInsertSizeThreshold(bamfile);
+					thresh = ist.getInsertSizeThreshold(bamfile, useduplicateflag);
 				} catch (IOException e) {
 					e.printStackTrace();
 					System.exit(1);
@@ -54,7 +57,7 @@ public class ReadCountExtractor {
 			
 			try {
 				ReadCountExtractor t = new ReadCountExtractor();
-				t.extractReadCounts(bamfile, locifile, processors, thresh);
+				t.extractReadCounts(bamfile, locifile, processors, thresh, useduplicateflag);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -63,12 +66,12 @@ public class ReadCountExtractor {
 			}
 		}
 		else {
-			System.out.println("Usage: ReadCountExtractor.jar <bamfile> <peakfile> <outfile> <insertsize threshold>");
+			System.out.println("Usage: ReadCountExtractor.jar <bamfile> <peakfile> <outfile> [insertsize threshold] [--keepduplicates]");
 		}
 		
 	}
 
-	public void extractReadCounts(String chrbamfile, String peakfile, ATACReadProcessor[] processors, int insertthresh) throws IOException{
+	public void extractReadCounts(String chrbamfile, String peakfile, ATACReadProcessor[] processors, int insertthresh, boolean useduplicateflag) throws IOException{
 		
 		SamReaderFactory factory = SamReaderFactory.makeDefault()
 	              .enable(SamReaderFactory.Option.INCLUDE_SOURCE_IN_RECORDS, SamReaderFactory.Option.VALIDATE_CRC_CHECKSUMS)
@@ -142,7 +145,7 @@ public class ReadCountExtractor {
 			totalreads++;
 			boolean isnegative = next.getReadNegativeStrandFlag();
 
-			if(!isValidRead(next, insertthresh)){
+			if(!isValidRead(next, insertthresh, useduplicateflag)){
 				invalidreads++;
 				continue;
 			}
@@ -281,12 +284,12 @@ public class ReadCountExtractor {
 		}
 	}
 	
-	private boolean isValidRead(SAMRecord record, int thresh){
+	private boolean isValidRead(SAMRecord record, int thresh, boolean useduplicateflag){
 		if ((!record.getReadPairedFlag() ||
                 record.getReadUnmappedFlag() ||
                 record.getMateUnmappedFlag() ||
                 record.isSecondaryOrSupplementary() ||
-                record.getDuplicateReadFlag())) {
+                (record.getDuplicateReadFlag() && useduplicateflag) )) {
 			return false;
 		}
 		

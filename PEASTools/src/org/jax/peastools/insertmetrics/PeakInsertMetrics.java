@@ -21,14 +21,19 @@ import org.jax.peastools.util.Util;
 public class PeakInsertMetrics {
 
 	public static void main(String[] args){
+		boolean useduplicateflag = true;
 		PeakInsertMetrics ir = new PeakInsertMetrics();
 		String chr = args[0];	//Chromosome being processed
 		String bamfile = args[1];	//BAM of one chromosome
 		String peakfile = args[2];	//ATAC-Seq Peak File
 		String outfile = args[3];	//Output file
 		int thresh = Integer.parseInt(args[4]);	//Maximum insert size
+		if(args[args.length-1].equals("--keepduplicates")) {
+			useduplicateflag = false;
+			System.out.println("Keeping duplicates.");
+		}
 		try {
-			ir.getInsertMetrics(chr, peakfile, bamfile, outfile, thresh);
+			ir.getInsertMetrics(chr, peakfile, bamfile, outfile, thresh, useduplicateflag);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -42,7 +47,7 @@ public class PeakInsertMetrics {
 	 * @param outfile Output file.
 	 * @throws IOException 
 	 */
-	public void getInsertMetrics(String chr, String peakfile, String bamfile, String outfile, int threshold) throws IOException{
+	public void getInsertMetrics(String chr, String peakfile, String bamfile, String outfile, int threshold, boolean useduplicateflag) throws IOException{
 		Util util = new Util();
 		
 		Location[] peaks = util.getSortedLocationsWithIds(peakfile, chr);
@@ -68,7 +73,7 @@ public class PeakInsertMetrics {
 		while(it.hasNext() && pi < peaks.length){
 			SAMRecord next = it.next();
 			
-			if(!includeRead(next, threshold)){
+			if(!includeRead(next, threshold, useduplicateflag)){
 				continue;
 			}
 
@@ -167,12 +172,12 @@ public class PeakInsertMetrics {
 	}
 	
 	
-	private boolean includeRead(SAMRecord record, int thresh){
+	private boolean includeRead(SAMRecord record, int thresh, boolean useduplicateflag){
 		if ((!record.getReadPairedFlag() ||
                 record.getReadUnmappedFlag() ||
                 record.getMateUnmappedFlag() ||
                 record.isSecondaryOrSupplementary() ||
-                record.getDuplicateReadFlag() ||
+                (record.getDuplicateReadFlag() && useduplicateflag) ||
                 record.getReadNegativeStrandFlag() ||
                 record.getInferredInsertSize() == 0)) {
 			return false;

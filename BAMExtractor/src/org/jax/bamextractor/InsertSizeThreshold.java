@@ -14,7 +14,7 @@ import htsjdk.samtools.ValidationStringency;
 public class InsertSizeThreshold {
 
 	
-	public int getInsertSizeThreshold(String chrbamfile) throws IOException{
+	public int getInsertSizeThreshold(String chrbamfile, boolean useduplicateflag) throws IOException{
 		SamReaderFactory factory = SamReaderFactory.makeDefault()
 	              .enable(SamReaderFactory.Option.INCLUDE_SOURCE_IN_RECORDS, SamReaderFactory.Option.VALIDATE_CRC_CHECKSUMS)
 	              .validationStringency(ValidationStringency.SILENT);
@@ -33,7 +33,7 @@ public class InsertSizeThreshold {
 		
 		while(it.hasNext()){
 			SAMRecord next = it.next();
-			stats.addRecord(next);
+			stats.addRecord(next, useduplicateflag);
 		}
 		
 		int thresh = 20;
