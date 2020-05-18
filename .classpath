@@ -7,7 +7,7 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/athib/Desktop/DeepLearning_ATAC/DataExtraction/htsjdk-2.18.1.jar"/>
-	<classpathentry kind="lib" path="/Users/athib/Downloads/commons-math3-3.6.1/commons-math3-3.6.1.jar"/>
+	<classpathentry kind="lib" path="/Users/athib/Desktop/scATAC/htsjdk/htsjdk-2.21.2-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/Users/athib/Documents/commons-math3-3.6.1/commons-math3-3.6.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

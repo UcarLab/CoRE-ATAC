@@ -25,6 +25,7 @@ cd peak_features
 
 jarpath="${args[9]}/"
 
+keepdups="${args[10]}"
 
 ##Start with peaks and extract features.
 ##Sort BAM  #TODO add option to skip this step if already sorted
@@ -58,7 +59,7 @@ annotatePeaks.pl "${inputpeaks}" "${homerref}" -m "${ctcfmotifs}" -nmotifs > ${p
 
 #Get the insert size threshold to remove outlier inserts
 echo "--- Getting insert size threshold. ---"
-java -jar "${jarpath}PEASTools.jar" insertsizethresh "${prefix}_sorted.bam" "${outDir}/peak_features" --keepduplicates #!!!TODO!!!#
+java -jar "${jarpath}PEASTools.jar" insertsizethresh "${prefix}_sorted.bam" "${outDir}/peak_features" ${keepdups}
 thresh=$(cat "thresh.txt")
 
 
@@ -67,7 +68,7 @@ echo "--- Getting insert features. ---"
 for i in {1..22}
 do
     chr=chr$i
-    java -jar "${jarpath}PEASTools.jar" insertmetrics "${chr}" "${chr}.bam" "${inputpeaks}" "${prefix}_${chr}_insertmetrics.txt" "$thresh" --keepduplicates #!!!TODO!!!#
+    java -jar "${jarpath}PEASTools.jar" insertmetrics "${chr}" "${chr}.bam" "${inputpeaks}" "${prefix}_${chr}_insertmetrics.txt" "$thresh" ${keepdups}
 rm ${chr}.bam
     cat ${prefix}_${chr}_insertmetrics.txt >> ${prefix}_insertmetrics.txt
 rm "${prefix}_${chr}_insertmetrics.txt"
