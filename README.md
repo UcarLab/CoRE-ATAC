@@ -4,8 +4,6 @@ Classification of Regulatory Elements with ATAC-seq (CoRE-ATAC).
 
 See CoRE-ATA_Manual for instructions on encoding data and predicting cis-RE function.
 
-A pretrained model that works for TensorFlow CPU is available in releases.
-
 CoRE-ATAC is split into 
 
 1. Feature Extraction/Prediction
@@ -262,3 +260,7 @@ To train the PEAS model run the following:
 
 
 This method is used to prevent component overfitting. For example, signal and sequence models may need more time for training, meanwhile PEAS components need less time. To prevent overfitting on PEAS features, these components are trained independently. After merging, both models should be at a point close to overfitting. Therefore, we only want to train on 1-5 epochs so that the model can learn how to integrate the features, but not begin overfitting them.
+=======
+# What's next?
+Code and documentation for training a model using CoRE-ATAC data encoders and/or model training scripts.
+>>>>>>> branch 'master' of https://github.com/UcarLab/CoRE-ATAC.git
