@@ -64,7 +64,7 @@ def predict(datadirectory, basename, model, outputfile, featurefile, labelencode
     print("--- Data loaded in %s seconds ---" % (time.time() - start_time))
 
     x_test_sigseq = sigseqdata
-    if swapchannels:
+    if swapchannels == False:
         x_test_sigseq = np.moveaxis(x_test_sigseq, 1, -1) #Originally had channels first, but CPU tensorflow requires channels last
     x_test_peas = peasfeatures
 
