@@ -7,7 +7,6 @@ from keras.layers import Input
 import numpy as np
 import subprocess
 from tensorloader import TensorLoader as tl
-import partitioning_util as part
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from sklearn import preprocessing
@@ -22,26 +21,40 @@ import time
 #Step 0: Process arguments
 parser = argparse.ArgumentParser(description='CoRE-ATAC Prediction Tool')
 parser.add_argument("datadirectory")
+parser.add_argument("basename")
 parser.add_argument("model")
 parser.add_argument("outputfile")
+
+parser.add_argument('--pf', dest='pf', type=str, default="", 
+                    help='Destination of PEAS features)')
+
+parser.add_argument('--le', dest='le', type=str, default="", 
+                    help='Destination of LabelEncoder.)')
+
 args = parser.parse_args()
 
 datadirectory = args.datadirectory
+basename = args.basename
 model = args.model
 outputfile = args.outputfile
 
-def predict(datadirectory, model, outputfile):
-    basename = os.path.basename(os.path.normpath(datadirectory))
+featurefile = args.pf
+labelencoder = args.le
+
+def predict(datadirectory, basename, model, outputfile, featurefile, labelencoder):
     model = load_model(model)
     
-    featurefile = "./PEAS/features.txt"
-    labelencoder = "./PEAS/labelencoder.txt"
+    if featurefile == "":
+        featurefile = "/CoRE-ATAC/PEAS/features.txt"
+
+    if labelencoder == "":
+        labelencoder = "/CoRE-ATAC/PEAS/labelencoder.txt"
 
     #Step 1: Load the data
     start_time = time.time()
     seqdata,sigdata,annot,summitpeaks,peaks = tl.readTensors(basename, datadirectory, 600, sequence=True, signal=True)
     peasfeatures = tl.getPEASFeatures(datadirectory+"/peak_features/"+basename+"_features.txt", featurefile, labelencoder, peaks)
-    num_classes = 4
+    #num_classes = 4
     peasfeatures = np.expand_dims(peasfeatures, axis=2)
     sigseqdata = tl.getSeqSigTensor(seqdata, sigdata)
 
@@ -62,4 +75,4 @@ def predict(datadirectory, model, outputfile):
     pd.DataFrame(np.concatenate((peaks, predictions), axis=1), columns=columns).to_csv(outputfile, header=None, index=None, sep="\t")
 
 
-predict(datadirectory, model, outputfile)
+predict(datadirectory, basename, model, outputfile, featurefile, labelencoder)

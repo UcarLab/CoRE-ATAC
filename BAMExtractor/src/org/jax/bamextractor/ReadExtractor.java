@@ -69,7 +69,7 @@ public class ReadExtractor {
 			processors[8] = new SequenceFrequencies(outdir+"/"+prefix+"_sequencefreq.txt");
 			
 			int thresh = Integer.MAX_VALUE;
-			if(args.length > 6 && !args[5].trim().equals("")) {
+			if(args.length > 6 && !args[6].trim().equals("")) {
 				thresh = Integer.parseInt(args[6]);
 			}
 			else {

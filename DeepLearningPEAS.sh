@@ -15,26 +15,34 @@ homerref="${args[4]}"
 homermotifs="${args[5]}"
 conservation="${args[6]}"
 ctcfmotifs="${args[7]}"
-
 inputpeaks="${args[8]}"
+jarpath="${args[9]}/"
+CHRFILE="${args[10]}"
+keepdups="${args[11]}"
+
+CHROMOSOMES=()
+
+while IFS= read -r line; do
+    CHROMOSOMES+=("$line")
+done < ${CHRFILE}
+
 
 cd "${outDir}"
 
 mkdir peak_features
 cd peak_features
 
-jarpath="${args[9]}/"
 
-keepdups="${args[10]}"
+
 
 ##Start with peaks and extract features.
 ##Sort BAM  #TODO add option to skip this step if already sorted
-echo "--- Sorting bam file. ---"
+#echo "--- Sorting bam file. ---"
 #echo "${inDir}/${prefix}.bam"
-samtools sort  -T PEASEXTRACT_${prefix} -o ${prefix}_sorted.bam "${inDir}/${prefix}.bam"
-samtools index ${prefix}_sorted.bam
+#samtools sort  -T PEASEXTRACT_${prefix} -o ${prefix}_sorted.bam "${inDir}/${prefix}.bam"
 
-#cp "${inDir}/${prefix}.bam" ${prefix}_sorted.bam
+cp "${inDir}/${prefix}.bam" ${prefix}_sorted.bam
+samtools index ${prefix}_sorted.bam
 
 #
 
@@ -59,19 +67,19 @@ annotatePeaks.pl "${inputpeaks}" "${homerref}" -m "${ctcfmotifs}" -nmotifs > ${p
 
 #Get the insert size threshold to remove outlier inserts
 echo "--- Getting insert size threshold. ---"
-java -jar "${jarpath}PEASTools.jar" insertsizethresh "${prefix}_sorted.bam" "${outDir}/peak_features" ${keepdups}
+java -jar "${jarpath}PEASTools.jar" insertsizethresh "${prefix}_sorted.bam" "${outDir}/peak_features" ${CHRFILE} ${keepdups}
 thresh=$(cat "thresh.txt")
 
 
 #Get Insert features
 echo "--- Getting insert features. ---"
-for i in {1..22}
+for i in ${CHROMOSOMES[@]}
 do
-    chr=chr$i
+    chr=$i
     java -jar "${jarpath}PEASTools.jar" insertmetrics "${chr}" "${chr}.bam" "${inputpeaks}" "${prefix}_${chr}_insertmetrics.txt" "$thresh" ${keepdups}
-rm ${chr}.bam
+    rm ${chr}.bam
     cat ${prefix}_${chr}_insertmetrics.txt >> ${prefix}_insertmetrics.txt
-rm "${prefix}_${chr}_insertmetrics.txt"
+    rm "${prefix}_${chr}_insertmetrics.txt"
 done
 
 echo "--- Getting conservation scores. ---"

@@ -1,0 +1,21 @@
+Bootstrap: docker
+From: <choose images available from: https://ngc.nvidia.com/catalog/containers/nvidia:tensorflow example: nvcr.io/nvidia/tensorflow:20.03-tf2-py3>
+
+%post
+    python3 -m pip install --upgrade pip
+    yes | pip3 install scipy
+    yes | pip3 install numpy cython
+    yes | pip3 install pandas scikit-learn matplotlib
+    yes | pip3 install keras
+
+    mkdir /CoRE-ATAC
+    cd /CoRE-ATAC
+    wget https://github.com/UcarLab/CoRE-ATAC/releases/download/v1.1/ModelTrainer_v1.1.zip
+    unzip FeaturePredictor_v1.1.zip
+
+%environment
+    export PATH=/CoRE-ATAC/:$PATH
+
+%labels
+    Author Asa Thibodeau
+    CoRE-ATAC_ModelTrainer v1.1
