@@ -31,6 +31,8 @@ parser.add_argument('--pf', dest='pf', type=str, default="",
 parser.add_argument('--le', dest='le', type=str, default="", 
                     help='Destination of LabelEncoder.)')
 
+parser.add_argument('--swapchannels', default=False, action='store_true', dest='swap')
+
 args = parser.parse_args()
 
 datadirectory = args.datadirectory
@@ -40,8 +42,9 @@ outputfile = args.outputfile
 
 featurefile = args.pf
 labelencoder = args.le
+swapchannels = args.swap
 
-def predict(datadirectory, basename, model, outputfile, featurefile, labelencoder):
+def predict(datadirectory, basename, model, outputfile, featurefile, labelencoder, swapchannels):
     model = load_model(model)
     
     if featurefile == "":
@@ -61,7 +64,8 @@ def predict(datadirectory, basename, model, outputfile, featurefile, labelencode
     print("--- Data loaded in %s seconds ---" % (time.time() - start_time))
 
     x_test_sigseq = sigseqdata
-    x_test_sigseq = np.moveaxis(x_test_sigseq, 1, -1) #Originally had channels first, but CPU tensorflow requires channels last
+    if swapchannels:
+        x_test_sigseq = np.moveaxis(x_test_sigseq, 1, -1) #Originally had channels first, but CPU tensorflow requires channels last
     x_test_peas = peasfeatures
 
     #Step 2: Make predictions
@@ -75,4 +79,4 @@ def predict(datadirectory, basename, model, outputfile, featurefile, labelencode
     pd.DataFrame(np.concatenate((peaks, predictions), axis=1), columns=columns).to_csv(outputfile, header=None, index=None, sep="\t")
 
 
-predict(datadirectory, basename, model, outputfile, featurefile, labelencoder)
+predict(datadirectory, basename, model, outputfile, featurefile, labelencoder, swapchannels)
