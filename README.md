@@ -40,7 +40,7 @@ and install the hg19 reference for HOMER
 `perl /HOMER/configureHomer.pl -install hg19`
 
 
-**Step 3: Dowwnload the hg19 .fa files from UCSC.**
+**Step 3: Download the hg19 .fa files from UCSC.**
 
 1. Download the hg19 reference: `ftp://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.fa.gz`
 2. Download the chromosome files: `ftp://hgdownload.soe.ucsc.edu/goldenPath/hg19/chromosomes/`
@@ -84,6 +84,8 @@ To extract feaures, use the singularity sandbox with the following code, replaci
 **Arg5:** The path to the file specifying the reference genome chromosomes as noted in the installation section.
 
 **Arg6:** The output directory. Note: This directory should already be created.
+
+**IMPORTANT: The full path must be used for the output directory!**
 
 After running, multiple feature files will be generated in the specific output directory.
 
