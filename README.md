@@ -206,7 +206,7 @@ Training CoRE-ATAC is a 3 step process which first trains CoRE-ATAC and PEAS fea
 **Step 4: Train Signal and Sequence**
 To train the signal and sequence model run the following:
 
-`singularity exec ./CoRE-ATAC-ModelTrainer.sif /CoRE-ATAC/CoRE-ATACFeatureExtraction-singularity.sh <arg1> <arg2> <arg3> <arg4>`
+`singularity exec --nv ./CoRE-ATAC-ModelTrainer.sif /CoRE-ATAC/CoRE-ATACFeatureExtraction-singularity.sh <arg1> <arg2> <arg3> <arg4>`
 
 **Arg1:** The path of the file listing the base names from Step 2.
 
@@ -222,7 +222,7 @@ To train the signal and sequence model run the following:
 **Step 5: Train PEAS **
 To train the PEAS model run the following:
 
-`singularity exec ./CoRE-ATAC-ModelTrainer.sif /CoRE-ATAC/CoRE-ATACFeatureExtraction-singularity.sh <arg1> <arg2> <arg3> <arg4> <arg5>`
+`singularity exec --nv ./CoRE-ATAC-ModelTrainer.sif /CoRE-ATAC/CoRE-ATACFeatureExtraction-singularity.sh <arg1> <arg2> <arg3> <arg4> <arg5>`
 
 **Arg1:** The path of the file listing the base names from Step 2.
 
@@ -240,7 +240,7 @@ To train the PEAS model run the following:
 
 To train the PEAS model run the following:
 
-`singularity exec ./CoRE-ATAC-ModelTrainer.sif /CoRE-ATAC/CoRE-ATACFeatureExtraction-singularity.sh <arg1> <arg2> <arg3> <arg4> <arg5> <arg6> <arg7>`
+`singularity exec --nv ./CoRE-ATAC-ModelTrainer.sif /CoRE-ATAC/CoRE-ATACFeatureExtraction-singularity.sh <arg1> <arg2> <arg3> <arg4> <arg5> <arg6> <arg7>`
 
 **Arg1:** The path of the file listing the base names from Step 2.
 
