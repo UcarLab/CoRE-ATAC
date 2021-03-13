@@ -134,7 +134,7 @@ The output file is a tab delimited text file with the following columns:
 
 # Model Training #
 
-We do not provide image files for training models. However, we do provide a [definition file](TODO) template and the necessary releases for building a singularity image. Due to different architectures and CUDA installations, it is important that the correct tensorflow GPU image is used.
+We do not provide image files for training models. However, we do provide a [definition file](https://github.com/UcarLab/CoRE-ATAC/blob/master/singularity/CoRE-ATAC-ModelTrainer.def) template and the necessary releases for building a singularity image. Due to different architectures and CUDA installations, it is important that the correct tensorflow GPU image is used.
 
 ### Requirements ###
 
