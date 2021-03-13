@@ -2,8 +2,6 @@
 
 Classification of Regulatory Elements with ATAC-seq (CoRE-ATAC).
 
-See CoRE-ATA_Manual for instructions on encoding data and predicting cis-RE function.
-
 CoRE-ATAC is split into 
 
 1. Feature Extraction/Prediction
