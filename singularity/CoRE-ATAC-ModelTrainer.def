@@ -11,7 +11,7 @@ From: <choose images available from: https://ngc.nvidia.com/catalog/containers/n
     mkdir /CoRE-ATAC
     cd /CoRE-ATAC
     wget https://github.com/UcarLab/CoRE-ATAC/releases/download/v1.1/ModelTrainer_v1.1.zip
-    unzip FeaturePredictor_v1.1.zip
+    unzip ModelTrainer_v1.1.zip
 
 %environment
     export PATH=/CoRE-ATAC/:$PATH
