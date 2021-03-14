@@ -145,15 +145,17 @@ We do not provide image files for training models. However, we do provide a [def
 
 ### Building the singularity image file for training models ###
 
+Though we provide a singularity image file for training models: [releases](https://github.com/UcarLab/CoRE-ATAC/releases), it may be necessary to build a new singularity image that better fits the computing environment. For example, CUDA installations require earlier versions of tensorflow.
+
 To build the singularity image file, first identify the NVIDIA docker image](https://ngc.nvidia.com/catalog/containers/nvidia:tensorflow/tags) that best suits your system.
 
 Next, update the singularity definition file, available from: (https://github.com/UcarLab/CoRE-ATAC/blob/master/singularity/CoRE-ATAC-ModelTrainer.def)[https://github.com/UcarLab/CoRE-ATAC/blob/master/singularity/CoRE-ATAC-ModelTrainer.def]
 
 Edit this file, replacing: 
 
-`<choose images available from: https://ngc.nvidia.com/catalog/containers/nvidia:tensorflow example: nvcr.io/nvidia/tensorflow:20.03-tf2-py3>`
+`nvcr.io/nvidia/tensorflow:19.01-py3`
 
-with the appropriate tensorflow docker image (e.g., `nvcr.io/nvidia/tensorflow:20.03-tf2-py3`)
+with the appropriate tensorflow docker image
 
 
 Next, build the singularity image:
@@ -165,7 +167,7 @@ The singularity image should now be built and ready to use to train models!
 
 ### Training Models ###
 
-Once the image file is created, we can now use this image to train models. For this follow the following steps:
+Once the image file is downloaded/created, we can now use this image to train models. For this follow the following steps:
 
 **Step 1: Create a file listing the feature directories.**
 

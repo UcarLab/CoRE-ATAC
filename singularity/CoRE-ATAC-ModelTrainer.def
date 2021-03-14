@@ -1,12 +1,12 @@
 Bootstrap: docker
-From: <choose images available from: https://ngc.nvidia.com/catalog/containers/nvidia:tensorflow example: nvcr.io/nvidia/tensorflow:20.03-tf2-py3>
+From: nvcr.io/nvidia/tensorflow:19.01-py3
 
 %post
     python3 -m pip install --upgrade pip
     yes | pip3 install scipy
     yes | pip3 install numpy cython
     yes | pip3 install pandas scikit-learn matplotlib
-    yes | pip3 install keras
+    yes | pip3 install keras==2.2.4
 
     mkdir /CoRE-ATAC
     cd /CoRE-ATAC
