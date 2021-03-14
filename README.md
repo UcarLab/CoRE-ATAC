@@ -145,7 +145,9 @@ We do not provide image files for training models. However, we do provide a [def
 
 ### Building the singularity image file for training models ###
 
-Though we provide a singularity image file for training models: [releases](https://github.com/UcarLab/CoRE-ATAC/releases), it may be necessary to build a new singularity image that better fits the computing environment. For example, CUDA installations require earlier versions of tensorflow.
+CoRE-ATAC has been tested using the (https://github.com/UcarLab/CoRE-ATAC/blob/master/singularity/CoRE-ATAC-ModelTrainer.def)[definition file] provided in the singularity directory. Due to size limits on release, we do not provide the built singularity image file on github.
+
+However, it may be necessary to build a new singularity image that better fits the computing environment. For example, CUDA installations require earlier versions of tensorflow.
 
 To build the singularity image file, first identify the NVIDIA docker image](https://ngc.nvidia.com/catalog/containers/nvidia:tensorflow/tags) that best suits your system.
 
