@@ -46,6 +46,7 @@ From: ubuntu:18.04
     cd /CoRE-ATAC
     wget https://github.com/UcarLab/CoRE-ATAC/releases/download/v1.2/FeaturePredictor_v1.2.zip
     unzip FeaturePredictor_v1.2.zip
+    mv /CoRE-ATAC/FeaturePredictor_v1.2/* /CoRE-ATAC/
 
 
 %environment

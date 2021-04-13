@@ -12,6 +12,7 @@ From: nvcr.io/nvidia/tensorflow:19.01-py3
     cd /CoRE-ATAC
     wget https://github.com/UcarLab/CoRE-ATAC/releases/download/v1.2/ModelTrainer_v1.2.zip
     unzip ModelTrainer_v1.2.zip
+    mv /CoRE-ATAC/ModelTrainer_v1.2/* /CoRE-ATAC/
 
 %environment
     export PATH=/CoRE-ATAC/:$PATH
