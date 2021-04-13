@@ -31,9 +31,9 @@ for i in range(len(peaks)):
 
     start = curpeak[1]
     end = curpeak[2]
-    center = start+(end-start)/2
-    dlstart = center-extend
-    dlend = center+extend-1
+    center = int(start+(end-start)/2)
+    dlstart = int(center-extend)
+    dlend = int(center+extend-1)
     if aindex:
         rv.append([curchr, dlstart, dlend, i, start,end, curpeak[aindex]])
         rv2.append([curchr, start,end, curpeak[aindex]])

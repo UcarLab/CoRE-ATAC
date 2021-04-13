@@ -44,8 +44,8 @@ From: ubuntu:18.04
 
     mkdir /CoRE-ATAC
     cd /CoRE-ATAC
-    wget https://github.com/UcarLab/CoRE-ATAC/releases/download/v1.1/FeaturePredictor_v1.1.zip
-    unzip FeaturePredictor_v1.1.zip
+    wget https://github.com/UcarLab/CoRE-ATAC/releases/download/v1.2/FeaturePredictor_v1.2.zip
+    unzip FeaturePredictor_v1.2.zip
 
 
 %environment
@@ -55,4 +55,4 @@ From: ubuntu:18.04
 
 %labels
     Author Asa Thibodeau
-    CoRE-ATAC_FeaturePredictor v1.1
+    CoRE-ATAC_FeaturePredictor v1.2

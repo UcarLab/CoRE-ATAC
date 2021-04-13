@@ -1,5 +1,4 @@
 #!/bin/bash
-alias python=python3
 args=()
 ((index=0))
 for i in "$@"
@@ -36,7 +35,7 @@ CTCFMOTIFS=${path}PEAS/CTCF.motifs
 cd "${outDir}"
 
 #Step 1: Reformat peaks for 600 bp windows
-python ${path}PeakFormatter.py ${peakfile} ${sepfasta} ${reformattedpeaks}
+python3 ${path}PeakFormatter.py ${peakfile} ${sepfasta} ${reformattedpeaks}
 
 
 #Step 2: Extract features from BAM
