@@ -7,6 +7,10 @@ CoRE-ATAC is split into
 1. Feature Extraction/Prediction
 2. Model Training. 
 
+CoRE-ATAC makes use of features extracted by PEAS[1], using a modified version of the original source code available from https://github.com/UcarLab/PEAS
+
+[1] Thibodeau, A., Uyar, A., Khetan, S. et al. A neural network based model effectively predicts enhancers from clinical ATAC-seq samples. Sci Rep **8**, 16048 (2018). https://doi.org/10.1038/s41598-018-34420-9
+
 # Feature Extraction/Prediction #
 
 For feature extraction, we have provided a singularity image file in releases that users can immediately load into their systems with minimal set up. 
@@ -189,8 +193,7 @@ For example:
 line 1: `MCF7`
 line 2: `K562`
 
-**Step 3: **
-Create a list of PEAS features. These are the PEAS feature extracted during feature extraction. These are located in the `peak_features` directory of the feature extraction directory with the `_features.txt` suffix.
+**Step 3: Create a list of PEAS features.** These are the PEAS feature extracted during feature extraction. These are located in the `peak_features` directory of the feature extraction directory with the `_features.txt` suffix.
 
 For example:
 
@@ -209,7 +212,7 @@ With all 4 of these files, we are now ready to train models!
 
 Training CoRE-ATAC is a 3 step process which first trains CoRE-ATAC and PEAS features separately and then merges them for a final round of training.
 
-**Step 4: Train Signal and Sequence**
+**Step 5: Train Signal and Sequence**
 To train the signal and sequence model run the following:
 
 `singularity exec --nv ./CoRE-ATAC-ModelTrainer.sif /CoRE-ATAC/CoRE-ATACFeatureExtraction-singularity.sh <arg1> <arg2> <arg3> <arg4>`
@@ -225,8 +228,7 @@ To train the signal and sequence model run the following:
 
 
 
-**Step 5: Train PEAS **
-To train the PEAS model run the following:
+**Step 6: Train PEAS** To train the PEAS model run the following:
 
 `singularity exec --nv ./CoRE-ATAC-ModelTrainer.sif /CoRE-ATAC/CoRE-ATACFeatureExtraction-singularity.sh <arg1> <arg2> <arg3> <arg4> <arg5>`
 
@@ -242,7 +244,7 @@ To train the PEAS model run the following:
 
 
 
-**Step 6: Train the combined model**
+**Step 7: Train the combined model**
 
 To train the PEAS model run the following:
 
