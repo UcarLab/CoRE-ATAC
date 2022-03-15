@@ -1,4 +1,4 @@
-# CoRE-ATAC
+# CoRE-ATAC #
 
 Classification of Regulatory Elements with ATAC-seq (CoRE-ATAC).
 
@@ -6,6 +6,10 @@ CoRE-ATAC is split into
 
 1. Feature Extraction/Prediction
 2. Model Training. 
+
+CoRE-ATAC makes use of features extracted by PEAS[1], using a modified version of the original source code available from https://github.com/UcarLab/PEAS
+
+[1] Thibodeau, A., Uyar, A., Khetan, S. et al. A neural network based model effectively predicts enhancers from clinical ATAC-seq samples. Sci Rep **8**, 16048 (2018). https://doi.org/10.1038/s41598-018-34420-9
 
 # Feature Extraction/Prediction #
 
@@ -189,8 +193,7 @@ For example:
 line 1: `MCF7`
 line 2: `K562`
 
-**Step 3: **
-Create a list of PEAS features. These are the PEAS feature extracted during feature extraction. These are located in the `peak_features` directory of the feature extraction directory with the `_features.txt` suffix.
+**Step 3: Create a list of PEAS features.** These are the PEAS feature extracted during feature extraction. These are located in the `peak_features` directory of the feature extraction directory with the `_features.txt` suffix.
 
 For example:
 
@@ -209,7 +212,7 @@ With all 4 of these files, we are now ready to train models!
 
 Training CoRE-ATAC is a 3 step process which first trains CoRE-ATAC and PEAS features separately and then merges them for a final round of training.
 
-**Step 4: Train Signal and Sequence**
+**Step 5: Train Signal and Sequence**
 To train the signal and sequence model run the following:
 
 `singularity exec --nv ./CoRE-ATAC-ModelTrainer.sif /CoRE-ATAC/CoRE-ATACFeatureExtraction-singularity.sh <arg1> <arg2> <arg3> <arg4>`
@@ -225,8 +228,7 @@ To train the signal and sequence model run the following:
 
 
 
-**Step 5: Train PEAS **
-To train the PEAS model run the following:
+**Step 6: Train PEAS** To train the PEAS model run the following:
 
 `singularity exec --nv ./CoRE-ATAC-ModelTrainer.sif /CoRE-ATAC/CoRE-ATACFeatureExtraction-singularity.sh <arg1> <arg2> <arg3> <arg4> <arg5>`
 
@@ -242,7 +244,7 @@ To train the PEAS model run the following:
 
 
 
-**Step 6: Train the combined model**
+**Step 7: Train the combined model**
 
 To train the PEAS model run the following:
 
@@ -256,12 +258,82 @@ To train the PEAS model run the following:
 
 **Arg4:** The path of the file listing the train, val, and test chromosomes from Step 4.
 
-**Arg7:** The file path of sig-seq model previously trained (e.g., "MyModel-SigSeq.h5")
+**Arg5:** The file path of sig-seq model previously trained (e.g., "MyModel-SigSeq.h5")
 
-**Arg7:** The file path of PEAS model previously trained (e.g., "MyModel-PEAS.h5")
+**Arg6:** The file path of PEAS model previously trained (e.g., "MyModel-PEAS.h5")
 
 **Arg7:** The file path of the output model (e.g., "MyModel-Merged.h5")
 
 
 This method is used to prevent component overfitting. For example, signal and sequence models may need more time for training, meanwhile PEAS components need less time. To prevent overfitting on PEAS features, these components are trained independently. After merging, both models should be at a point close to overfitting. Therefore, we only want to train on 1-5 epochs so that the model can learn how to integrate the features, but not begin overfitting them.
+
+
+# Feature Extraction Output Files #
+
+Note: 600bp is the default used. These tools can be used for arbitrary window sizes.
+
+**\_peaks.txt:** A table delimited file containing the original and 600bp window peak locations. The 600bp window peak location is defined by the center of the original peak provided to CoRE-ATAC. The columns are defined as:
+
+1. Chromosome
+2. 600bp start
+3. 600bp end
+4. Peak index
+5. Original peak start
+6. Original peak end
+
+**\_cutpileups.txt:** Cut pileups for each 600bp peak window. Every two lines contains the following information:
+
+1st line: Tab delimited information regarding the peak location: chromosome, 600bp start, 600bp end, peak index
+2nd line: Comma separated integer values corresponding to the number of cut sites (5' or 3' read locations) within the 600bp window.
+
+**\_forwardcutpileups.txt:** Forward strand cut pileups for each 600bp peak window. Every two lines contains the following information:
+
+1st line: Tab delimited information regarding the peak location: chromosome, 600bp start, 600bp end, peak index
+2nd line: Comma separated integer values corresponding to the number of forward strand cut sites (5' read locations) within the 600bp window.
+
+**\_reversecutpileups.txt:** Reverse strand cut pileups for each 600bp peak window. Every two lines contains the following information:
+
+1st line: Tab delimited information regarding the peak location: chromosome, 600bp start, 600bp end, peak index
+2nd line: Comma separated integer values corresponding to the number of reverse strand cut sites (3' read locations) within the 600bp window.
+
+**\_insertsizes.txt:** The insert sizes of reads overlapping the 600bp window. Each peak is defined and follwed by a list of integers.
+
+Peak definition line: chromosome, 600bp start, 600bp end, peak index
+each peak definition line is follwed by a single integer per line until reaching the next peak definition or the end of the file.
+
+**\_insertpileups.txt:** Insert pileups for each 600bp peak window. Every two lines contains the following information:
+
+1st line: Tab delimited information regarding the peak location: chromosome, 600bp start, 600bp end, peak index
+2nd line: Comma separated integer values corresponding to the number of reads observed at each base in the 600bp window.
+
+**\_forwardmedianinsert.txt:** The median insert size of reads with forward cut sites at the current bp in the 600bp window. Every two lines contains the following information:
+
+1st line: Tab delimited information regarding the peak location: chromosome, 600bp start, 600bp end, peak index
+2nd line: Comma separated float values corresponding to the median insert size of forward cut sites.
+
+**\_reversemedianinsert.txt:** The median insert size of reads with reverse cut sites at the current bp in the 600bp window. Every two lines contains the following information:
+
+1st line: Tab delimited information regarding the peak location: chromosome, 600bp start, 600bp end, peak index
+2nd line: Comma separated float values corresponding to the median insert size of reverse cut sites.
+
+**\_sequencefreq.txt:** The DNA sequence frequency. Every 6 lines contains the following information:
+
+1st line: Tab delimited information regarding the peak location: chromosome, 600bp start, 600bp end, peak index
+2nd line: Reference DNA sequence.
+3rd line: Frequency of adenine (A) for each bp in the 600bp window.
+4th line: Frequency of cytosine (C) for each bp in the 600bp window.
+5th line: Frequency of guanine (G) for each bp in the 600bp window.
+6th line: Frequency of thymine (T) for each bp in the 600bp window.
+
+Note: One hot encoding of the reference is used when < 10 read sequences overlap the position.
+
+**\_peaks.txt_original.txt:** Tab delimited file of the original peak locations with index information. This is used for extracting features from PEAS.
+1. Chromosome
+2. Original peak start
+3. Original peak end
+4. Peak index
+
+**\_cutmatrices.txt:** Unused. This file encodes the cut sites of paired end reads as a sparse matrix. This was tested, but did not produce a valuable model on its own. This file is formatted to first specify the peak location on the first line, specify the number of sparse matrix entries on the second line, and finally specify wher each cut pair is located in the subsequent lines equal to the number specified by the 2nd line. This process repeeats until the end of the file.
+
+All other files correspond to outputs defined by PEAS.
 
