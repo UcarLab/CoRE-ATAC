@@ -18,14 +18,17 @@ From: ubuntu:18.04
     apt-get install -y software-properties-common
     apt-add-repository universe
     apt-get -y update
+    apt update
+    apt-get install -y libopenjp2-7-dev
+    apt-get install -y libtiff5
     apt-get install -y python3-pip
     python3 -m pip install --upgrade pip
     apt-get install -y python-tk
     yes | pip3 install scipy
     yes | pip3 install numpy cython
     yes | pip3 install pandas scikit-learn matplotlib
-    yes | pip3 install tensorflow==2.2
-    yes | pip3 install keras
+    yes | pip3 install tensorflow-cpu==2.2
+    yes | pip3 install keras==2.4.3
     yes | pip3 install matplotlib
 
     mkdir /SAMTOOLS
@@ -56,4 +59,4 @@ From: ubuntu:18.04
 
 %labels
     Author Asa Thibodeau
-    CoRE-ATAC_FeaturePredictor v1.2
+    CoRE-ATAC_FeaturePredictor v1.2.1
